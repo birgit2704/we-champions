@@ -16,14 +16,16 @@
     <div class="main-container">
       <img id="logo-img" src="assets/freddie.png" />
       <h1 class="header-txt">We are the Champions</h1>
-      <textarea id="text-field" name="text-field">
-Write your message here.
-        </textarea
-      >
-      <button>Publish</button>
-      <h2 class="sub-header-txt">- Messages -</h2>
-      <p class="message-txt">Message</p>
-      <p class="message-txt">Message</p>
+      <label color="white" for="text-field">Tell us your story:</label>
+      <textarea
+        id="text-field"
+        type="text"
+        name="text-field"
+        placeholder="Write your message here..."
+      ></textarea>
+      <button id="publish-btn">Publish</button>
+      <h2 class="sub-header-txt">- Messageboard -</h2>
+      <div id="message-board"></div>
     </div>
     <script src="index.js"></script>
   </body>
