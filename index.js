@@ -23,7 +23,7 @@ let fromEl = document.getElementById("from");
 let toEl = document.getElementById("to");
 
 buttonEl.addEventListener("click", function () {
-  let newMessage = `To: ${toEl.value}\n ${textAreaEl.value}\n From: ${fromEl.value}`;
+  let newMessage = `To: ${toEl.value} ${textAreaEl.value} From: ${fromEl.value}`;
   addMessageToMessageboard(newMessage);
   push(messageListInDB, newMessage);
   clearValues();
@@ -43,7 +43,7 @@ onValue(messageListInDB, function (snapshot) {
 function addMessageToMessageboard(input) {
   let newElementInMessageboard = document.createElement("p");
   newElementInMessageboard.textContent = input[1];
-  messageBoardEl.append(newElementInMessageboard);
+  messageBoardEl.prepend(newElementInMessageboard);
 
   newElementInMessageboard.addEventListener("click", function () {
     let exactLocationOfMessageInDB = ref(database, `messageList/${input[0]}`);
