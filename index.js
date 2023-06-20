@@ -1,3 +1,21 @@
+// https://realtime-database2-54e92-default-rtdb.europe-west1.firebasedatabase.app/
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  onValue,
+  remove,
+} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+const appSettings = {
+  databaseURL:
+    "https://realtime-database2-54e92-default-rtdb.europe-west1.firebasedatabase.app",
+};
+const app = initializeApp(appSettings);
+const database = getDatabase(app);
+const messageListInDB = ref(database, "messageList");
+
 let textAreaEl = document.getElementById("text-field");
 let buttonEl = document.getElementById("publish-btn");
 let messageBoardEl = document.getElementById("message-board");
@@ -5,15 +23,36 @@ let fromEl = document.getElementById("from");
 let toEl = document.getElementById("to");
 
 buttonEl.addEventListener("click", function () {
-  let newMessage = textAreaEl.value;
-  let from = fromEl.value;
-  let to = toEl.value;
-  let newElementInMessageboard = `<p class="message-txt bold">
-  To ${to} <br/><span class="inner">${newMessage}</span><br/>From ${from}</p><p class="inner">hi</p>`;
+  let newMessage = `To: ${toEl.value}\n ${textAreaEl.value}\n From: ${fromEl.value}`;
+  addMessageToMessageboard(newMessage);
+  push(messageListInDB, newMessage);
+  clearValues();
+  console.log(newMessage);
+});
 
-  messageBoardEl.innerHTML =
-    newElementInMessageboard + messageBoardEl.innerHTML;
+onValue(messageListInDB, function (snapshot) {
+  if (snapshot.exists()) {
+    let storedMessages = Object.entries(snapshot.val());
+    messageBoardEl.innerHTML = "";
+    storedMessages.forEach((message) => addMessageToMessageboard(message));
+  } else {
+    messageBoardEl.innerHTML = "No messages here";
+  }
+});
+
+function addMessageToMessageboard(input) {
+  let newElementInMessageboard = document.createElement("p");
+  newElementInMessageboard.textContent = input[1];
+  messageBoardEl.append(newElementInMessageboard);
+
+  newElementInMessageboard.addEventListener("click", function () {
+    let exactLocationOfMessageInDB = ref(database, `messageList/${input[0]}`);
+    remove(exactLocationOfMessageInDB);
+  });
+}
+
+function clearValues() {
   textAreaEl.value = "";
   fromEl.value = "";
   toEl.value = "";
-});
+}
